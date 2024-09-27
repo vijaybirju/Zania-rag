@@ -1,0 +1,114 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environment directories
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+*.cover
+*.py,cover
+.hypothesis/
+
+# PyCharm / IDE-specific files
+.idea/
+*.sublime-project
+*.sublime-workspace
+.vscode/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# macOS-specific files
+.DS_Store
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# pytest cache
+.pytest_cache/
+
+# mypy type checker
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Coverage tool files
+coverage.xml
+*.coveragerc
+
+# Environments and dependency files
+*.env
+.env.local
+.env.*.local
+.env.test
+.env.production
+.envrc
+venv/
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Sphinx documentation
+docs/_build/
+
+# PyInstaller
+# Usually these files are written by a python script from a template
+*.manifest
+*.spec
+
+# Local folder to store work in progress
+local/
+
+# Celery task queue
+celerybeat-schedule
+celerybeat.pid
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# Cython debug symbols
+cython_debug/
+
+# VS Code settings and history
+.vscode/
+.history/

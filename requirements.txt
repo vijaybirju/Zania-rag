@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+flask
+transformers
+PyMuPDF
+requests
+gunicorn
+TensorFlow
+tf-keras

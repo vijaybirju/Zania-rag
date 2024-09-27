@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RAG App</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Upload PDF and Ask Questions</h1>
+    <form method="POST" enctype="multipart/form-data" action="/process_form/">
+        <input type="file" name="file" required><br>
+        <textarea name="questions" placeholder="Enter your questions, one per line" required></textarea><br>
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if answers %}
+        <h2>Answers</h2>
+        <ul>
+        {% for answer in answers %}
+            <li><strong>{{ answer['question'] }}:</strong> {{ answer['answer'] }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
