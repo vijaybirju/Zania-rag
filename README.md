@@ -9,6 +9,10 @@ This project allows users to upload a PDF document and ask questions related to 
 - Retrieves answers for each question from the content of the uploaded PDF
 - Uses OpenAI's `gpt-4o-mini` model for generating responses
 - Simple and interactive web interface built using [Streamlit](https://streamlit.io/)
+- ![image](https://github.com/user-attachments/assets/d24d2dd7-2ecb-4091-bf11-3d0f0bde59f7)
+- ![image](https://github.com/user-attachments/assets/1f994ab8-1efc-442d-8a85-2432a74f07c5)
+
+
 
 ## Prerequisites
 
