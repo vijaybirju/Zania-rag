@@ -1,5 +1,4 @@
 import re
-from langchain.text_splitter import CharacterTextSplitter
 
 
 def split_into_chunks(text: str, chunk_size=500, overlap=200):

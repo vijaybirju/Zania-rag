@@ -59,7 +59,7 @@ async def fetch_answers(questions_list):
     if tasks:  # Only gather if there are tasks
         start_time = time.time()
         answers = await asyncio.gather(*tasks)
-        print("--- %s seconds ---" % (time.time() - start_time))
+        print("--- %s q ---" % (time.time() - start_time))
         
         # Populate the qa dictionary with results
         for question, answer in zip(questions_list, answers):
