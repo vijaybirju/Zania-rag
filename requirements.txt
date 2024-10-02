@@ -8,9 +8,4 @@ gunicorn
 TensorFlow
 tf-keras
 tiktoken
-llama-index
-llama-index-llms-groq
-llama-index-embeddings-huggingface
-llama-parse
-langchain
-langchain_community
+faiss-cpu
