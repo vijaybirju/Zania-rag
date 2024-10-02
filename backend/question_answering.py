@@ -42,9 +42,11 @@ def initialize_vectorstore(text_chunks):
 def get_relevant_chunk(question, vectorstore, original_chunks):
     """Get the relevant chunk from the text using vector search."""
     question_embedding = np.array(get_embedding(question), dtype='float32').reshape(1, -1)
-    distances, indices = vectorstore.search(question_embedding, k=1)
-    relevant_chunk = original_chunks[indices[0][0]]
-    return relevant_chunk
+    distances, indices = vectorstore.search(question_embedding, k=3)
+    relevant_chunks = [original_chunks[idx] for idx in indices[0]]
+    combined_relevant_chunk = "\n".join(relevant_chunks)  # You can choose to join with a different separator if needed
+
+    return combined_relevant_chunk
 
 async def fetch_answer_from_openai(question, relevant_chunk, client):
     """Generate the answer using OpenAI's API"""
