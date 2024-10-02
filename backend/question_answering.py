@@ -1,37 +1,71 @@
 import bs4
 import  os
-from langchain import hub
-from langchain_chroma import Chroma
 from dotenv import load_dotenv
-from langchain_openai import OpenAIEmbeddings
-from langchain.llms import OpenAI
-from langchain.chains import RetrievalQA
+from openai import OpenAI, AsyncOpenAI
+import faiss
+import numpy as np
+
 
 load_dotenv(override=True)
+
+client = OpenAI()
+
+
+def get_embedding(text, model="text-embedding-3-small"):
+   text = text.replace("\n", " ")
+   return client.embeddings.create(input = [text], model=model).data[0].embedding
+
 def create_vectorstore(chunks):
-    """Create a vector store for efficient retrieval"""
-    embeddings = OpenAIEmbeddings(
-    model="text-embedding-3-large",
-    )
-    db = Chroma.from_documents(
-        documents = chunks,
-        embedding=embeddings,
-        persist_directory="chroma_db_llamaparse1"
-    )
-    return db
-
-
-def answer_question(question, text_chunks):
-    """Answer a question using LangChain's QA chain"""
-    vectorstore = create_vectorstore(text_chunks)
-    llm = OpenAI(model_name="gpt-4o-mini", openai_api_key=os.getenv("OPENAI_API_KEY"))
+    """Create a Faiss vector store for efficient retrieval"""
+    # Initialize Faiss index with the appropriate dimension (based on the embedding size)
+    dimension = len(get_embedding(chunks[0]))  
+    index = faiss.IndexFlatL2(dimension)
     
-    chain = RetrievalQA.from_chain_type(
-        llm=llm,
-        chain_type="stuff",
-        retriever=vectorstore.as_retriever(),
-        return_source_documents=True,
+    # Store all embeddings and corresponding text chunks
+    embeddings = []
+    for chunk in chunks:
+        embedding = get_embedding(chunk)
+        embeddings.append(embedding)
+        index.add(np.array(embedding).reshape(1, -1))
+    return index, chunks  # Return the index and the text chunks for retrieval
+
+
+async def initialize_openai_client():
+    """Initialize the OpenAI client"""
+    return AsyncOpenAI()
+
+def initialize_vectorstore(text_chunks):
+    """Create and return the vector store for the given text chunks"""
+    vectorstore, original_chunks = create_vectorstore(text_chunks)
+    return vectorstore, original_chunks
+
+def get_relevant_chunk(question, vectorstore, original_chunks):
+    """Get the relevant chunk from the text using vector search."""
+    question_embedding = np.array(get_embedding(question), dtype='float32').reshape(1, -1)
+    distances, indices = vectorstore.search(question_embedding, k=1)
+    relevant_chunk = original_chunks[indices[0][0]]
+    return relevant_chunk
+
+async def fetch_answer_from_openai(question, relevant_chunk, client):
+    """Generate the answer using OpenAI's API"""
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": f"Context: {relevant_chunk}\n\nQuestion: {question}\nAnswer as concisely as possible."}
+    ]
+    
+    response = await client.chat.completions.create(
+        model="gpt-4o-mini",  
+        messages=messages,
+        max_tokens=150,
+        n=1,
+        temperature=0
     )
-    response = chain({"query": question})
-    result = response['result']
-    return result
+    
+    return response.choices[0].message.content.strip()
+
+async def answer_question(question, vectorstore, original_chunks, client):
+    """Answer a question using vector search and OpenAI API"""
+    relevant_chunk = get_relevant_chunk(question, vectorstore, original_chunks)
+    answer = await fetch_answer_from_openai(question, relevant_chunk, client)
+
+    return answer
